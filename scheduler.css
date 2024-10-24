@@ -1,0 +1,27 @@
+body{
+    margin:0;
+    padding:0;
+}
+.container{
+    background-color: white;
+    position:relative;
+}
+.header{
+    display:flex;
+    margin-left: 4%;
+}
+.para{
+    margin-top: 25px;
+    font-size:11px;
+    margin-left: 10px;
+    color:grey;
+}
+.heading{
+    margin-top: 24spx;
+}
+.hour-label{
+    height:60px;
+}
+#main{
+    margin-left:5%;
+}
