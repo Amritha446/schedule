@@ -1,96 +1,90 @@
-/*let timeDiff = 10; 
-let minutesToAdd = 60;
-let currentDate = new Date("2022-04-10 08:00:00");
-
-for (let i = 0; i < timeDiff; i++) {
-  console.log(currentDate.toLocaleTimeString("en-SE", { timeStyle: "short" }));
-  currentDate.setMinutes(currentDate.getMinutes() + minutesToAdd);
-}*/
-var schedule = document.getElementById('schedule');
-var hours = 11; 
-
-for (let i = 0; i < hours; i++) {
-    var hourLabel = document.createElement('div');
-    hourLabel.className = 'hour-label';
-
-    if(i>4){    
-        hourLabel.innerText = (i-12) + 8 +':00';
-    }
-    else{
-        hourLabel.innerText = i + 8 +':00';
-    }
-    
-    schedule.appendChild(hourLabel);
-}
-
-var array=[{
-    start: 0,
-    duration: 15,
-    title: "Exercise"//8-8.15 //15
-}, {
-    start: 25,
-    duration: 30,
-    title: "Travel to work"//8.25-8.55 //55
-}, {
-    start: 30,
-    duration: 30,
-    title: "Plan day"//8.30-9.00  //60
-}, {
-    start: 60,
-    duration: 15,
-    title: "Review yesterday's commits"//9.00-9.15  //75
-}, {
-    start: 100,
-    duration: 15,
-    title: "Code review"//9.40-9.55  //115
-}, {
-    start: 180,
-    duration: 90,
-    title: "Have lunch with John"//11-12.30  //270
-}, {
-    start: 360,
-    duration: 30,
-    title: "Skype call"//2.00-2.30  //390
-}, {
-    start: 370,
-    duration: 45,
-    title: "Follow up with designer"//2.10-2.55  //415
-}, {
-    start: 400,
-    duration: 30,
-    title: "Push up branch"//2.40-3.20  //430
-}
+var data = [
+    { start: 0, duration: 15, title: "Exercise" },
+    { start: 25, duration: 30, title: "Travel to work" },
+    { start: 30, duration: 30, title: "Plan day" },
+    { start: 60, duration: 15, title: "Review yesterday's commits" },
+    { start: 100, duration: 15, title: "Code review" },
+    { start: 180, duration: 90, title: "Have lunch with John" },
+    { start: 360, duration: 30, title: "Skype call" },
+    { start: 370, duration: 45, title: "Follow up with designer" },
+    { start: 400, duration: 30, title: "Push up branch" }
 ];
-
-let con=0;
-for(let i=0;i<=array.length-1;i++){
-var div = document.createElement("div");
-let x=array[i].start;
-let y=array[i].duration;
-let b=[x+y];   
-console.log(b); 
-let z=0;                      //(a+b)<array[i].start      x<=array[i+1].duration || array[i+1].duration<array[i-1].duration
-if(i<array.length-1 && (x+y)>array[i+1].start ){
-    div.style.marginLeft="50%";
-    div.style.zIndex=1;
-    
-    if(con>0){
-        div.style.marginLeft="0%";
-        div.style.zIndex=0;
+// sort
+for (let j = 0; j < data.length; j++) {
+    for (let k = 0; k < data.length - 1 - j; k++) {
+        if (data[k].start > data[k + 1].start) {
+            let temp = data[k]
+            data[k] = data[k + 1]
+            data[k + 1] = temp
+        }
     }
-    con++;
+
 }
-else{
-    con=0;
+// console.log(data);
+var calender = document.getElementById('calender');
+var timeChart = document.createElement('div');
+timeChart.className = 'time-chart';
+calender.appendChild(timeChart);
+let overlapping_arr = []
+let overlapped_arr = []
+
+for (let i = 0; i < data.length - 1; i++) {
+    var eventCont = document.createElement('div');
+    eventCont.innerText = data[i].title;
+    eventCont.className='event-cont';
+
+    //checking for overlap
+    if ((data[i].start + data[i].duration) > (data[i + 1].start)) {
+        overlapped_arr.push(i)
+        overlapping_arr.push(i + 1)
+
+        // width 50% for both i& i+1
+        // i+1 margin-left 50%
+    }
 }
-div.style.position="absolute";
-div.style.width = "95%";
-div.style.background = "hsl(207.14deg 47.73% 82.75%)";
-div.style.color = "black";
-div.style.top=array[i].start+'px';
-div.style.height = array[i].duration+'px';
-div.innerHTML = array[i].title;
-div.style.fontSize='10px';
-document.getElementById("main").appendChild(div);
+// console.log(overlapped_arr)
+// console.log(overlapping_arr)
+let flag=1
+for (let i = 0; i < data.length; i++) {
+    var eventCont = document.createElement('div');
+
+    if (overlapped_arr.includes(i) || overlapping_arr.includes(i)) {
+        if(i%2==0){
+            flag=1
+        }
+        else{
+            flag=0
+        }
+        if(flag==1){
+            eventCont.style.marginLeft = '51%';
+            eventCont.style.width = '50%';
+        }
+        else{
+            eventCont.style.width = '50%';
+        }
+        
+        eventCont.innerText = data[i].title;
+        eventCont.style.top = data[i].start + 'px';
+        eventCont.style.height = data[i].duration + 'px';
+        eventCont.style.fontSize = '10px';
+        eventCont.style.borderLeft = '2px solid #7AA9D2';
+        eventCont.style.background = '#E9EAEA';
+        eventCont.style.position = 'absolute';
+        timeChart.appendChild(eventCont);
+    }
+    
+    else{
+        eventCont.innerText = data[i].title;
+        eventCont.style.top = data[i].start + 'px';
+        eventCont.style.height = data[i].duration + 'px';
+        eventCont.style.fontSize = '10px';
+        eventCont.style.width = '100%'
+        eventCont.style.borderLeft = '2px solid #7AA9D2';
+        eventCont.style.background = '#E9EAEA';
+        eventCont.style.position = 'absolute';
+        timeChart.appendChild(eventCont);
+
+    }
+
 
 }
